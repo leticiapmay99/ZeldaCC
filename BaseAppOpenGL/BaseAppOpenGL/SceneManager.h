@@ -2,6 +2,7 @@
 #include "SceneBaseClass.h"		// Classe Base
 #include "Scene1.h"
 #include "Scene2.h"
+#include "Scene3.h"
 
 class CSceneManager : public CSceneBaseClass
 {

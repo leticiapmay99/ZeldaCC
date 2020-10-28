@@ -58,6 +58,9 @@ void CSceneManager::ChangeScene(unsigned int _uiCurrentScene)
 	case 2:
 		this->Scene = new CScene2();
 	break;
+	case 3:
+		this->Scene = new CScene3();
+		break;
 
 	}
 }
@@ -115,7 +118,7 @@ void CSceneManager::KeyDownPressed(WPARAM wParam)
 	// Carrega nova cena...
 	if (wParam == '1') ChangeScene(1);
 	if (wParam == '2') ChangeScene(2);
-
+	if (wParam == '3') ChangeScene(3);
 }
 
 // Redimensiona e inicial a janela OpenGL

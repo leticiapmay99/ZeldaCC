@@ -1,14 +1,13 @@
-#include "Scene1.h"
+#include "Scene3.h"
 
 
-CScene1::CScene1()
+CScene3::CScene3()
 {
 
 	pCamera = NULL;
 	pTexto = NULL;
 	pTextures = NULL;
-	pModel3DS_1 = NULL;
-	pModel3DS_2 = NULL;
+
 	pModel3DS_3 = NULL;
 
 	bIsWireframe = false;
@@ -48,24 +47,13 @@ CScene1::CScene1()
 	pTextures->CreateTextureTGA(10, "../Scene1/tree2.tga");
 
 
-	
+
 
 	fPosX = 0.0f;
 	fPosY = 10.0f;
 	fPosZ = 0.0f;
 	fMovementFactor = 0.1f;
 
-	// Cria esfera com coordenadas de textura
-	this->sphere1 = gluNewQuadric();
-	gluQuadricTexture(this->sphere1, TRUE);
-
-	// Carrega Objetos da  Cena (casa)
-	pModel3DS_1 = new CModel_3DS();
-	pModel3DS_1->Load("../Scene1/House2.3DS");
-
-	// Carrega Objetos da  Cena (muro)
-	pModel3DS_2 = new CModel_3DS();
-	pModel3DS_2->Load("../Scene1/Muro.3DS");
 
 	// Carrega Objetos da  Cena (gramado)
 	pModel3DS_3 = new CModel_3DS();
@@ -74,7 +62,7 @@ CScene1::CScene1()
 }
 
 
-CScene1::~CScene1(void)
+CScene3::~CScene3(void)
 {
 	if (pTexto)
 	{
@@ -100,19 +88,6 @@ CScene1::~CScene1(void)
 		pTimer = NULL;
 	}
 
-	gluDeleteQuadric(this->sphere1);
-
-	if (pModel3DS_1)
-	{
-		delete pModel3DS_1;
-		pModel3DS_1 = NULL;
-	}
-
-	if (pModel3DS_2)
-	{
-		delete pModel3DS_2;
-		pModel3DS_2 = NULL;
-	}
 
 	if (pModel3DS_3)
 	{
@@ -124,7 +99,7 @@ CScene1::~CScene1(void)
 
 
 
-int CScene1::DrawGLScene(void)	// Função que desenha a cena
+int CScene3::DrawGLScene(void)	// Função que desenha a cena
 {
 	// Get FPS
 	if (GetTickCount() - ulLastFPS >= 1000)	// When A Second Has Passed...
@@ -134,7 +109,7 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 		iFrames = 0;							// Reset The FPS Counter
 	}
 	iFrames++;									// FPS counter
-	
+
 	pTimer->Update();							// Atualiza o timer
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Limpa a tela e o Depth Buffer
@@ -151,12 +126,12 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 	if (bIsWireframe)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	else
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//                               DESENHA OS OBJETOS DA CENA (INÍCIO)
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	glColor3f(1.0f, 1.0f, 1.0f);
 
 	// Habilita mapeamento de texturas 2D
@@ -166,98 +141,13 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 	CreateSkyBox(0.0f, 100.0f, 0.0f,
 		1000.0f, 1000.0f, 1000.0f,
 		pTextures);
-	
-	DrawCube(0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 6);
-	DrawCube(0.0f, 1.5f, 0.0f, 0.0f, 1.0f, 0.0f, 45.0f, 1.0f, 1.0f, 1.0f, 6);
-	DrawCube(2.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 2.0f, 1.0f, 6);
-
-
-	//// Desenha Planeta Terra
-	pTextures->ApplyTexture(8);
-
-	glPushMatrix();
-	glTranslatef(0.0f, 5.0f, 0.0f);
-	glRotatef(fRenderPosY, 0.0f, 1.0f, 0.0f);
-	glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);	
-	gluSphere(this->sphere1, 2, 20, 20);
-	glPopMatrix();
-
-
-
-	// Desenha casa
-	glPushMatrix();
-	glTranslatef(-10.0f, 0.0f, 0.0f);
-	glRotatef(-45.0f, 0.0f, 1.0f, 0.0f);
-	pModel3DS_1->Draw();
-	glPopMatrix();
-
-	// Desenha muro
-	glPushMatrix();
-	pModel3DS_2->Draw();
-	glPopMatrix();
 
 	// Desenha gramado
 	glPushMatrix();
 	pModel3DS_3->Draw();
 	glPopMatrix();
 
-
-	// Desenha as árvores aplicando Blending.
-	// A operação é baseada no canal Alpha da textura .TGA
-	glDisable(GL_CULL_FACE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, 0.95f);
-
-	pTextures->ApplyTexture(9);
-	glPushMatrix();
-	glTranslatef(10.0f, 0.0f, 0.0f);
-	glBegin(GL_QUADS);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-5.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f( 5.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f( 5.0, 10.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-5.0, 10.0, 0.0);
-
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0,  0.0,  5.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0,  0.0, -5.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0, 10.0, -5.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0, 10.0,  5.0);
-	glEnd();
-	glPopMatrix();
-
-	pTextures->ApplyTexture(10);
-	glPushMatrix();
-	glTranslatef(0.0f, 0.0f, 10.0f);
-	glBegin(GL_QUADS);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-5.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(5.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(5.0, 10.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-5.0, 10.0, 0.0);
-
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0, 0.0, 5.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0, 0.0, -5.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0, 10.0, -5.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0, 10.0, 5.0);
-	glEnd();
-	glPopMatrix();
-
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_BLEND);
-	glEnable(GL_CULL_FACE);
-
-
-
-
-
-
-
-
-
-
-
+	
 
 
 	glDisable(GL_TEXTURE_2D);
@@ -302,7 +192,7 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 
 	//// Imprime o FPS da aplicação e o Timer
 	glRasterPos2f(10.0f, 80.0f);
-	pTexto->glPrint("Frames-per-Second: %d ---- Timer: %.1f segundos", iFPS, (pTimer->GetTime()/1000));
+	pTexto->glPrint("Frames-per-Second: %d ---- Timer: %.1f segundos", iFPS, (pTimer->GetTime() / 1000));
 
 
 	glPopMatrix();
@@ -316,7 +206,7 @@ int CScene1::DrawGLScene(void)	// Função que desenha a cena
 
 
 
-void CScene1::MouseMove(void) // Tratamento de movimento do mouse
+void CScene3::MouseMove(void) // Tratamento de movimento do mouse
 {
 	// Realiza os cálculos de rotação da visão do Player (através das coordenadas
 	// X do mouse.
@@ -338,7 +228,7 @@ void CScene1::MouseMove(void) // Tratamento de movimento do mouse
 	pCamera->rotateLoc(-fDeltaY, 1.0f, 0.0f, 0.0f);
 }
 
-void CScene1::KeyPressed(void) // Tratamento de teclas pressionadas
+void CScene3::KeyPressed(void) // Tratamento de teclas pressionadas
 {
 
 	// Verifica se a tecla 'W' foi pressionada e move o Player para frente
@@ -393,7 +283,7 @@ void CScene1::KeyPressed(void) // Tratamento de teclas pressionadas
 	}
 }
 
-void CScene1::KeyDownPressed(WPARAM	wParam) // Tratamento de teclas pressionadas
+void CScene3::KeyDownPressed(WPARAM	wParam) // Tratamento de teclas pressionadas
 {
 	switch (wParam)
 	{
@@ -405,7 +295,7 @@ void CScene1::KeyDownPressed(WPARAM	wParam) // Tratamento de teclas pressionadas
 	{
 		pTimer->Init();
 	}
-		break;
+	break;
 
 	case VK_RETURN:
 
@@ -417,7 +307,7 @@ void CScene1::KeyDownPressed(WPARAM	wParam) // Tratamento de teclas pressionadas
 }
 
 //	Cria um grid horizontal ao longo dos eixos X e Z
-void CScene1::Draw3DSGrid(float width, float length)
+void CScene3::Draw3DSGrid(float width, float length)
 {
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -442,7 +332,7 @@ void CScene1::Draw3DSGrid(float width, float length)
 }
 
 
-void CScene1::DrawCube(float pX, float pY, float pZ,
+void CScene3::DrawCube(float pX, float pY, float pZ,
 	float rX, float rY, float rZ, float angle,
 	float sX, float sY, float sZ,
 	int texID)
@@ -460,16 +350,16 @@ void CScene1::DrawCube(float pX, float pY, float pZ,
 	glBegin(GL_QUADS);
 	// face frente
 	glTexCoord2d(0.0f, 0.0f); glVertex3f(-0.5f, -0.5f, 0.5f);
-	glTexCoord2d(1.0f, 0.0f); glVertex3f( 0.5f, -0.5f, 0.5f);
-	glTexCoord2d(1.0f, 1.0f); glVertex3f( 0.5f,  0.5f, 0.5f);
-	glTexCoord2d(0.0f, 1.0f); glVertex3f(-0.5f,  0.5f, 0.5f);
+	glTexCoord2d(1.0f, 0.0f); glVertex3f(0.5f, -0.5f, 0.5f);
+	glTexCoord2d(1.0f, 1.0f); glVertex3f(0.5f, 0.5f, 0.5f);
+	glTexCoord2d(0.0f, 1.0f); glVertex3f(-0.5f, 0.5f, 0.5f);
 
 	// face trás
 	glTexCoord2d(0.0f, 0.0f); glVertex3f(0.5f, -0.5f, -0.5f);
 	glTexCoord2d(0.0f, 1.0f); glVertex3f(-0.5f, -0.5f, -0.5f);
 	glTexCoord2d(1.0f, 1.0f); glVertex3f(-0.5f, 0.5f, -0.5f);
 	glTexCoord2d(1.0f, 0.0f); glVertex3f(0.5f, 0.5f, -0.5f);
-	
+
 	// face direita
 	glTexCoord2d(0.0f, 0.0f); glVertex3f(0.5f, -0.5f, 0.5f);
 	glTexCoord2d(0.0f, 1.0f); glVertex3f(0.5f, -0.5f, -0.5f);
@@ -484,15 +374,15 @@ void CScene1::DrawCube(float pX, float pY, float pZ,
 
 	// face baixo
 	glTexCoord2d(0.0f, 0.0f); glVertex3f(-0.5f, -0.5f, -0.5f);
-	glTexCoord2d(0.0f, 1.0f); glVertex3f( 0.5f, -0.5f, -0.5f);
-	glTexCoord2d(1.0f, 1.0f); glVertex3f( 0.5f, -0.5f,  0.5f);
-	glTexCoord2d(1.0f, 0.0f); glVertex3f(-0.5f, -0.5f,  0.5f);
+	glTexCoord2d(0.0f, 1.0f); glVertex3f(0.5f, -0.5f, -0.5f);
+	glTexCoord2d(1.0f, 1.0f); glVertex3f(0.5f, -0.5f, 0.5f);
+	glTexCoord2d(1.0f, 0.0f); glVertex3f(-0.5f, -0.5f, 0.5f);
 
 	// face cima
-	glTexCoord2d(0.0f, 0.0f); glVertex3f(-0.5f,  0.5f,  0.5f);
-	glTexCoord2d(0.0f, 1.0f); glVertex3f( 0.5f,  0.5f,  0.5f);
-	glTexCoord2d(1.0f, 1.0f); glVertex3f( 0.5f,  0.5f, -0.5f);
-	glTexCoord2d(1.0f, 0.0f); glVertex3f(-0.5f,  0.5f,  -0.5f);
+	glTexCoord2d(0.0f, 0.0f); glVertex3f(-0.5f, 0.5f, 0.5f);
+	glTexCoord2d(0.0f, 1.0f); glVertex3f(0.5f, 0.5f, 0.5f);
+	glTexCoord2d(1.0f, 1.0f); glVertex3f(0.5f, 0.5f, -0.5f);
+	glTexCoord2d(1.0f, 0.0f); glVertex3f(-0.5f, 0.5f, -0.5f);
 
 	glEnd();
 
@@ -500,7 +390,7 @@ void CScene1::DrawCube(float pX, float pY, float pZ,
 }
 
 
-void CScene1::DrawAxis()
+void CScene3::DrawAxis()
 {
 	glPushMatrix();
 	glTranslatef(0.0f, 0.0f, 0.0f);
@@ -524,7 +414,7 @@ void CScene1::DrawAxis()
 }
 
 
-void CScene1::CreateSkyBox(float x, float y, float z,
+void CScene3::CreateSkyBox(float x, float y, float z,
 	float width, float height, float length,
 	CTexture* pTextures)
 {
