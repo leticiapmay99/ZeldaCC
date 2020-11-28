@@ -69,7 +69,7 @@ void CSceneManager::ChangeScene(unsigned int _uiCurrentScene)
 bool CSceneManager::InitGL(void)
 {
 	glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
-	glClearColor(0.0f, 0.0f, 0.0f, 0.5f);				// Black Background
+	glClearColor(0.7f, 0.7f, 0.7f, 0.7f);				// Black Background
 	glClearDepth(1.0f);									// Depth Buffer Setup
 	glEnable(GL_DEPTH_TEST);							// Enables Depth Testing	
 

@@ -83,6 +83,9 @@ private:
 	CModel_3DS* pModel3DS_1;
 	CModel_3DS* pModel3DS_2;
 	CModel_3DS* pModel3DS_3;
+	CModel_3DS* pModel3DS_4;
+
+	GLfloat fFogColor[4];
 
 };
 
