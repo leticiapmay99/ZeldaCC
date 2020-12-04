@@ -12,6 +12,7 @@ CScene3::CScene3()
 
 	bIsWireframe = false;
 	bIsCameraFPS = true;
+	fog = false;
 
 	iFPS = 0;
 	iFrames = 0;
@@ -64,13 +65,17 @@ CScene3::CScene3()
 	pModel3DS_2 = new CModel_3DS();
 	pModel3DS_2->Load("../Scene3/pedraMenor.3ds");
 	
+	pModel3DS_4 = new CModel_3DS();
+	pModel3DS_4->Load("../Scene3/arvore.3ds");
 
 
+	
 
-	fFogColor[0] = 0.7f;
-	fFogColor[1] = 0.7f;
-	fFogColor[2] = 0.7f;
-	fFogColor[3] = 2.0f;
+
+	fFogColor[0] = 0.5f;
+	fFogColor[1] = 0.5f;
+	fFogColor[2] = 0.5f;
+	fFogColor[3] = 0.5f;
 }
 
 
@@ -140,6 +145,7 @@ int CScene3::DrawGLScene(void)	// Função que desenha a cena
 	else
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//                               DESENHA OS OBJETOS DA CENA (INÍCIO)
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,6 +154,22 @@ int CScene3::DrawGLScene(void)	// Função que desenha a cena
 
 	// Habilita mapeamento de texturas 2D
 	glEnable(GL_TEXTURE_2D);
+	if (fog) {
+
+		glEnable(GL_FOG);
+		glFogfv(GL_FOG_COLOR, fFogColor);
+		glFogf(GL_FOG_START, 30.0f);
+		glFogf(GL_FOG_END, 120.0f);
+		glFogi(GL_FOG_MODE, GL_LINEAR);
+	}
+	else {
+		glEnable(GL_FOG);
+		glFogfv(GL_FOG_COLOR, fFogColor);
+		glFogf(GL_FOG_START, 1.0f);
+		glFogf(GL_FOG_END, 0.0f);
+		glFogi(GL_FOG_MODE, GL_LINEAR);
+	}
+
 
 	// Desenha o SkyBox
 	CreateSkyBox(0.0f, 100.0f, 0.0f,
@@ -161,29 +183,11 @@ int CScene3::DrawGLScene(void)	// Função que desenha a cena
 
 
 
-	// Pedra  maior perto da montanha
-	glPushMatrix();
-	glTranslatef(25.0f, 10.0f, -15.0f);
-	pModel3DS_1->Draw();
-	glPopMatrix();
-
-	// Pedra  menor
-	glPushMatrix();
-	glTranslatef(-10.0f, 10.0f, 16.0f);
-	pModel3DS_2->Draw();
-	glPopMatrix();
-	// Pedra  menor
-	glPushMatrix();
-	glTranslatef(-20.0f, 10.0f, 16.0f);
-	pModel3DS_2->Draw();
-	glPopMatrix();
-
-	// Pedra  menor
-	glPushMatrix();
-	glTranslatef(-30.0f, 10.0f, 16.0f);
-	pModel3DS_2->Draw();
-	glPopMatrix();
-
+	// Desenha pedras
+	DrawBiggerStone(25.0f, 10.0f, -15.0f);
+	DrawSmallerStone(-10.0f, 10.0f, 16.0f);
+	DrawSmallerStone(-20.0f, 10.0f, 16.0f);
+	DrawSmallerStone(-30.0f, 10.0f, 16.0f);
 
 
 	// Desenha objetos aplicando Blending.
@@ -192,242 +196,28 @@ int CScene3::DrawGLScene(void)	// Função que desenha a cena
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, 0.95f);
-
-	// Arvores
-	pTextures->ApplyTexture(10);
+	// desenhas arvores
+	DrawTree(-50.0f, 10.0f, -20.0f);
+	DrawTree(15.0f, 10.0f, 20.0f);
+	DrawTree(15.0f, 10.0f, -30.0f);
+	DrawTree(-20.0f, 10.0f, 28.0f);
+	DrawTree(-20.0f, 10.0f, -25.0f);
+	DrawTree(-35.0f, 10.0f, -25.0f);
+	DrawTree(-20.0f, 10.0f, -40.0f);
+	DrawTree(-60.0f, 10.0f, 50.0f);
+	 // desenha link
+	DrawLink(15.0f, 15.0f, 40.0f);
+	
 	glPushMatrix();
-	glTranslatef(15.0f, 10.0f, 20.0f);
-	glBegin(GL_QUADS);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(10.0, 20.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0, 20.0, 0.0);
+	glTranslatef(15.0f, -35.0f, 13.0f);
+	pModel3DS_4->Draw();
+	glPopMatrix();
 
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0,  0.0, 10.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0,  0.0, -10.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0, 20.0, -10.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0, 20.0, 10.0);
-	glEnd();
+	glPushMatrix();
+	glTranslatef(-10.0f, -35.0f, 15.0f);
+	pModel3DS_4->Draw();
 	glPopMatrix();
 	
-
-	pTextures->ApplyTexture(10);
-	glPushMatrix();
-	glTranslatef(15.0f, 10.0f, -30.0f);
-	glBegin(GL_QUADS);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(10.0, 20.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0, 20.0, 0.0);
-
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0, 0.0, 10.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0, 0.0, -10.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0, 20.0, -10.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0, 20.0, 10.0);
-	glEnd();
-	glPopMatrix();
-
-
-
-	pTextures->ApplyTexture(10);
-	glPushMatrix();
-	glTranslatef(-20.0f, 10.0f, 28.0f);
-	glBegin(GL_QUADS);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(10.0, 20.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0, 20.0, 0.0);
-
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0, 0.0, 10.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0, 0.0, -10.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0, 20.0, -10.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0, 20.0, 10.0);
-	glEnd();
-	glPopMatrix();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
-
-	pTextures->ApplyTexture(10);
-	glPushMatrix();
-	glTranslatef(-20.0f, 10.0f, -25.0f);
-	glBegin(GL_QUADS);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(10.0, 20.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0, 20.0, 0.0);
-
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0, 0.0, 10.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0, 0.0, -10.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0, 20.0, -10.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0, 20.0, 10.0);
-	glEnd();
-	glPopMatrix();
-
-
-
-	pTextures->ApplyTexture(10);
-	glPushMatrix();
-	glTranslatef(-35.0f, 10.0f, -25.0f);
-	glBegin(GL_QUADS);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(10.0, 20.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0, 20.0, 0.0);
-
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0, 0.0, 10.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0, 0.0, -10.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0, 20.0, -10.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0, 20.0, 10.0);
-	glEnd();
-	glPopMatrix();
-
-
-	pTextures->ApplyTexture(10);
-	glPushMatrix();
-	glTranslatef(-20.0f, 10.0f, -40.0f);
-	glBegin(GL_QUADS);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(10.0, 20.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0, 20.0, 0.0);
-
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0, 0.0, 10.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0, 0.0, -10.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0, 20.0, -10.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0, 20.0, 10.0);
-	glEnd();
-	glPopMatrix();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	pTextures->ApplyTexture(10);
-	glPushMatrix();
-	glTranslatef(-60.0f, 10.0f, 50.0f);
-	glBegin(GL_QUADS);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(10.0, 20.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0, 20.0, 0.0);
-
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0, 0.0, 10.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0, 0.0, -10.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0, 20.0, -10.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0, 20.0, 10.0);
-	glEnd();
-	glPopMatrix();
-
-
-	pTextures->ApplyTexture(10);
-	glPushMatrix();
-	glTranslatef(-40.0f, 10.0f, 20.0f);
-	glBegin(GL_QUADS);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(10.0, 20.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0, 20.0, 0.0);
-
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0, 0.0, 10.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0, 0.0, -10.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0, 20.0, -10.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0, 20.0, 10.0);
-	glEnd();
-	glPopMatrix();
-
-	pTextures->ApplyTexture(10);
-	glPushMatrix();
-	glTranslatef(-50.0f, 10.0f, -20.0f);
-	glBegin(GL_QUADS);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(10.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(10.0, 20.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0, 20.0, 0.0);
-
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0, 0.0, 10.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0, 0.0, -10.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0, 20.0, -10.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0, 20.0, 10.0);
-	glEnd();
-	glPopMatrix();
-
-
-	// link
-	pTextures->ApplyTexture(9);
-	glPushMatrix();
-	glTranslatef(15.0f, 15.0f, 40.0f);
-	glBegin(GL_QUADS);
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-3.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(3.0, 0.0, 0.0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(3.0, 10.0, 0.0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-3.0, 10.0, 0.0);
-
-	glEnd();
-	glPopMatrix();
 
 
 
@@ -435,43 +225,8 @@ int CScene3::DrawGLScene(void)	// Função que desenha a cena
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
-
-
-	//glEnable(GL_FOG);
-	//glFogfv(GL_FOG_COLOR, fFogColor);
-	//glFogf(GL_FOG_START, 1.0f);
-	//glFogf(GL_FOG_END ,10.0f);
-	//glFogi(GL_FOG_MODE, GL_LINEAR);
-	
-	
+	glDisable(GL_FOG);
 	glDisable(GL_TEXTURE_2D);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -500,6 +255,12 @@ int CScene3::DrawGLScene(void)	// Função que desenha a cena
 	else {
 		pTexto->glPrint("[TAB]  Modo FILL");
 	}
+	if (!fog) {
+		pTexto->glPrint("[N]  Sem neblina"); // Imprime texto na tela
+	}
+	else {
+		pTexto->glPrint("[N]  Com  neblina");
+	}
 
 
 	//// Camera LookAt
@@ -523,8 +284,50 @@ int CScene3::DrawGLScene(void)	// Função que desenha a cena
 	return true;
 }
 
+void CScene3::DrawBiggerStone(float pX, float pY, float pZ) {
+	glPushMatrix();
+	glTranslatef(pX, pY, pZ);
+	pModel3DS_1->Draw();
+	glPopMatrix();
+}
+void CScene3::DrawSmallerStone(float pX, float pY, float pZ) {
+	glPushMatrix();
+	glTranslatef(pX, pY, pZ);
+	pModel3DS_2->Draw();
+	glPopMatrix();
+}
 
+void CScene3::DrawTree(float pX, float pY, float pZ) {
+	pTextures->ApplyTexture(10);
+	glPushMatrix();
+	glTranslatef(pX, pY, pZ);
+	glBegin(GL_QUADS);
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(-10.0, 0.0, 0.0);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(10.0, 0.0, 0.0);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(10.0, 20.0, 0.0);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(-10.0, 20.0, 0.0);
 
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0, 0.0, 10.0);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.0, 0.0, -10.0);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.0, 20.0, -10.0);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(0.0, 20.0, 10.0);
+	glEnd();
+	glPopMatrix();
+}
+void CScene3::DrawLink(float pX, float pY, float pZ) {
+	pTextures->ApplyTexture(9);
+	glPushMatrix();
+	glTranslatef(pX, pY, pZ);
+	glBegin(GL_QUADS);
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(-3.0, 0.0, 0.0);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(3.0, 0.0, 0.0);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(3.0, 10.0, 0.0);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(-3.0, 10.0, 0.0);
+	glEnd();
+	glPopMatrix();
+}
 
 void CScene3::MouseMove(void) // Tratamento de movimento do mouse
 {
@@ -601,29 +404,24 @@ void CScene3::KeyPressed(void) // Tratamento de teclas pressionadas
 	{
 		fPosY -= fMovementFactor;
 	}
+	
 }
 
 void CScene3::KeyDownPressed(WPARAM	wParam) // Tratamento de teclas pressionadas
 {
 	switch (wParam)
 	{
-	case VK_TAB:
-		bIsWireframe = !bIsWireframe;
-		break;
+		case VK_TAB:
+			bIsWireframe = !bIsWireframe;
+			break;
 
-	case VK_SPACE:
-	{
-		pTimer->Init();
+		case VK_SPACE:
+			pTimer->Init();
+
+		case 0x4E:
+			fog = !fog;
+			break;
 	}
-	break;
-
-	case VK_RETURN:
-
-		break;
-
-
-	}
-
 }
 
 //	Cria um grid horizontal ao longo dos eixos X e Z

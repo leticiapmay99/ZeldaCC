@@ -28,6 +28,15 @@ public:
 		float sX = 1.0f, float sY = 1.0f, float sZ = 1.0f,
 		int texID = -1);
 
+
+	void DrawBiggerStone(float pX, float pY, float pZ);
+
+	void DrawSmallerStone(float pX, float pY, float pZ);
+
+	void DrawLink(float pX, float pY, float pZ);
+
+	void DrawTree(float pX, float pY, float pZ);
+
 	void CreateSkyBox(float x, float y, float z,
 		float width, float height, float length,
 		CTexture* pTextures);
@@ -56,7 +65,7 @@ private:
 
 	bool bIsWireframe;	// Modos Wireframe/Solid
 	bool bIsCameraFPS;	// Ativa modo de camera First Person Shooter (true) ou Third Person Shooter (false)
-
+	bool fog;
 	float fRenderPosY;
 	float fTimerPosY;
 
