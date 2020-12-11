@@ -23,7 +23,7 @@ CScene3::CScene3()
 	pTexto = new CTexto();
 
 	// Cria camera
-	pCamera = new CCamera(0.0f, 1.0f, 20.0f);
+	pCamera = new CCamera(10.0f, 20.0f, 20.0f);
 
 	// Cria o Timer
 	pTimer = new CTimer();
@@ -181,8 +181,6 @@ int CScene3::DrawGLScene(void)	// Função que desenha a cena
 	pModel3DS_3->Draw();
 	glPopMatrix();
 
-
-
 	// Desenha pedras
 	DrawBiggerStone(25.0f, 10.0f, -15.0f);
 	DrawSmallerStone(-10.0f, 10.0f, 16.0f);
@@ -198,6 +196,9 @@ int CScene3::DrawGLScene(void)	// Função que desenha a cena
 	glAlphaFunc(GL_GREATER, 0.95f);
 	// desenhas arvores
 	DrawTree(-50.0f, 10.0f, -20.0f);
+	DrawTree(-30.0f, 10.0f, 16.0f);
+	DrawTree(-50.0f, 10.0f, 16.0f);
+	DrawTree(-50.0f, 10.0f, 30.0f);
 	DrawTree(15.0f, 10.0f, 20.0f);
 	DrawTree(15.0f, 10.0f, -30.0f);
 	DrawTree(-20.0f, 10.0f, 28.0f);
@@ -205,27 +206,23 @@ int CScene3::DrawGLScene(void)	// Função que desenha a cena
 	DrawTree(-35.0f, 10.0f, -25.0f);
 	DrawTree(-20.0f, 10.0f, -40.0f);
 	DrawTree(-60.0f, 10.0f, 50.0f);
-	 // desenha link
+	DrawTree(-55.0f, 10.0f, -40.0f);
+	DrawTree(-30.0f, 10.0f, -50.0f);
+	DrawTree(-60.0f, 10.0f, -60.0f);
+	// desenha link
 	DrawLink(15.0f, 15.0f, 40.0f);
 	
-	glPushMatrix();
-	glTranslatef(15.0f, -35.0f, 13.0f);
-	pModel3DS_4->Draw();
-	glPopMatrix();
-
 	glPushMatrix();
 	glTranslatef(-10.0f, -35.0f, 15.0f);
 	pModel3DS_4->Draw();
 	glPopMatrix();
 	
 
-
-
-
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_FOG);
+
 	glDisable(GL_TEXTURE_2D);
 
 
@@ -447,88 +444,6 @@ void CScene3::Draw3DSGrid(float width, float length)
 	}
 	glPopMatrix();
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-}
-
-
-void CScene3::DrawCube(float pX, float pY, float pZ,
-	float rX, float rY, float rZ, float angle,
-	float sX, float sY, float sZ,
-	int texID)
-{
-
-	// Seta a textura ativa
-	if (texID >= 0)
-		pTextures->ApplyTexture(texID);
-
-	glPushMatrix();
-	glTranslatef(pX, pY, pZ);
-	glRotatef(angle, rX, rY, rZ);
-	glScalef(sX, sY, sZ);
-
-	glBegin(GL_QUADS);
-	// face frente
-	glTexCoord2d(0.0f, 0.0f); glVertex3f(-0.5f, -0.5f, 0.5f);
-	glTexCoord2d(1.0f, 0.0f); glVertex3f(0.5f, -0.5f, 0.5f);
-	glTexCoord2d(1.0f, 1.0f); glVertex3f(0.5f, 0.5f, 0.5f);
-	glTexCoord2d(0.0f, 1.0f); glVertex3f(-0.5f, 0.5f, 0.5f);
-
-	// face trás
-	glTexCoord2d(0.0f, 0.0f); glVertex3f(0.5f, -0.5f, -0.5f);
-	glTexCoord2d(0.0f, 1.0f); glVertex3f(-0.5f, -0.5f, -0.5f);
-	glTexCoord2d(1.0f, 1.0f); glVertex3f(-0.5f, 0.5f, -0.5f);
-	glTexCoord2d(1.0f, 0.0f); glVertex3f(0.5f, 0.5f, -0.5f);
-
-	// face direita
-	glTexCoord2d(0.0f, 0.0f); glVertex3f(0.5f, -0.5f, 0.5f);
-	glTexCoord2d(0.0f, 1.0f); glVertex3f(0.5f, -0.5f, -0.5f);
-	glTexCoord2d(1.0f, 1.0f); glVertex3f(0.5f, 0.5f, -0.5f);
-	glTexCoord2d(1.0f, 0.0f); glVertex3f(0.5f, 0.5f, 0.5f);
-
-	// face esquerda
-	glTexCoord2d(0.0f, 0.0f); glVertex3f(-0.5f, -0.5f, -0.5f);
-	glTexCoord2d(0.0f, 1.0f); glVertex3f(-0.5f, -0.5f, 0.5f);
-	glTexCoord2d(1.0f, 1.0f); glVertex3f(-0.5f, 0.5f, 0.5f);
-	glTexCoord2d(1.0f, 0.0f); glVertex3f(-0.5f, 0.5f, -0.5f);
-
-	// face baixo
-	glTexCoord2d(0.0f, 0.0f); glVertex3f(-0.5f, -0.5f, -0.5f);
-	glTexCoord2d(0.0f, 1.0f); glVertex3f(0.5f, -0.5f, -0.5f);
-	glTexCoord2d(1.0f, 1.0f); glVertex3f(0.5f, -0.5f, 0.5f);
-	glTexCoord2d(1.0f, 0.0f); glVertex3f(-0.5f, -0.5f, 0.5f);
-
-	// face cima
-	glTexCoord2d(0.0f, 0.0f); glVertex3f(-0.5f, 0.5f, 0.5f);
-	glTexCoord2d(0.0f, 1.0f); glVertex3f(0.5f, 0.5f, 0.5f);
-	glTexCoord2d(1.0f, 1.0f); glVertex3f(0.5f, 0.5f, -0.5f);
-	glTexCoord2d(1.0f, 0.0f); glVertex3f(-0.5f, 0.5f, -0.5f);
-
-	glEnd();
-
-	glPopMatrix();
-}
-
-
-void CScene3::DrawAxis()
-{
-	glPushMatrix();
-	glTranslatef(0.0f, 0.0f, 0.0f);
-	glBegin(GL_LINES);
-	// Eixo X
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glVertex3f(-1000.0f, 0.0f, 0.0f);
-	glVertex3f(1000.0f, 0.0f, 0.0f);
-
-	// Eixo Y
-	glColor3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(0.0f, 1000.0f, 0.0f);
-	glVertex3f(0.0f, -1000.0f, 0.0f);
-
-	// Eixo Z
-	glColor3f(0.0f, 0.0f, 1.0f);
-	glVertex3f(0.0f, 0.0f, 1000.0f);
-	glVertex3f(0.0f, 0.0f, -1000.0f);
-	glEnd();
-	glPopMatrix();
 }
 
 

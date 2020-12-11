@@ -21,12 +21,7 @@ public:
 	virtual int DrawGLScene(void);					// Função que desenha a cena
 
 	void Draw3DSGrid(float width, float length);
-	void DrawAxis();
 
-	void DrawCube(float pX = 0.0f, float pY = 0.0f, float pZ = 0.0f,
-		float rX = 0.0f, float rY = 0.0f, float rZ = 0.0f, float angle = 0.0f,
-		float sX = 1.0f, float sY = 1.0f, float sZ = 1.0f,
-		int texID = -1);
 
 
 	void DrawBiggerStone(float pX, float pY, float pZ);
